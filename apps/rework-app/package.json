@@ -1,0 +1,53 @@
+{
+  "name": "@choto/rework-app",
+  "version": "0.0.1",
+  "description": "CLI webapp for Choto-ReWork",
+  "keywords": [
+    "rework",
+    "choto"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Choto-Dev/choto-rework",
+    "directory": "apps/rework-app"
+  },
+  "author": {
+    "name": "Choto-Dev",
+    "email": "rifat6633@gmail.com",
+    "url": "https://github.com/Choto-Dev"
+  },
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "rework-app": "./dist/server.js"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rsbuild build",
+    "build:force": "rimraf dist && rsbuild build",
+    "dev": "tsx ./server.dev.ts",
+    "start": "pnpm build && node ./dist/server.js",
+    "test:link": "pnpm build:force && npm unlink -g && npm link"
+  },
+  "devDependencies": {
+    "@hono/node-server": "1.19.1",
+    "@rsbuild/core": "1.5.0",
+    "@rsbuild/plugin-react": "1.4.0",
+    "@rspack/core": "1.5.2",
+    "@swan-io/chicane": "2.2.0",
+    "@types/node": "^24.3.1",
+    "@types/react": "19.1.11",
+    "@types/react-dom": "19.1.7",
+    "hono": "4.9.6",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "rimraf": "6.0.1",
+    "ts-pattern": "5.8.0",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2"
+  }
+}
