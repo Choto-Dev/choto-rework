@@ -140,18 +140,20 @@ async function startDevServer() {
   };
 }
 
-await startDevServer();
-// const server = await startDevServer();
+// await startDevServer();
+const server = await startDevServer();
 
 // graceful shutdown
-// process.on("SIGINT", () => {
-//   server.close();
-//   process.exit(0);
-// });
-// process.on("SIGTERM", (err) => {
-//   if (err) {
-//     console.error(err);
-//     process.exit(1);
-//   }
-//   process.exit(0);
-// });
+process.on("SIGINT", () => {
+  server.close();
+  process.exit(0);
+});
+process.on("SIGTERM", () => {
+  try {
+    server.close();
+    process.exit(0);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+});

@@ -66,5 +66,17 @@ export default defineConfig({
   },
   html: {
     title: "ReWork App",
+    meta: {
+      description: "Web Interface for ReWork.",
+    },
+    appIcon: {
+      name: "ReWork App",
+      icons: [
+        { src: "./assets/android-chrome-192x192.png", size: 192 },
+        { src: "./assets/android-chrome-512x512.png", size: 512 },
+      ],
+      filename: "./assets/manifest.webmanifest",
+    },
+    favicon: "./assets/favicon.ico",
   },
 });
