@@ -47,6 +47,9 @@
       },
       "complexity": {
         "useLiteralKeys": "off"
+      },
+      "nursery": {
+        "useSortedClasses": "on"
       }
     }
   }
