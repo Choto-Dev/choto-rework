@@ -1,6 +1,6 @@
 {
   "name": "@choto/rework-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI webapp for Choto-ReWork",
   "keywords": [
     "rework",
@@ -31,7 +31,8 @@
     "build:force": "rimraf dist && rsbuild build",
     "dev": "tsx ./server.dev.ts",
     "start": "pnpm build && node ./dist/server.js",
-    "test:link": "pnpm build:force && npm unlink -g && npm link"
+    "pub:test": "pnpm build:force && npm unlink -g && npm link",
+    "pub:latest": "pnpm build:force && npm publish --access public"
   },
   "devDependencies": {
     "@hono/node-server": "1.19.1",
