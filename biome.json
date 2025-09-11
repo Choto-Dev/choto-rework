@@ -10,11 +10,13 @@
   "files": {
     "includes": [
       "**/*.js",
+      "**/*.mjs",
       "**/*.ts",
       "**/*.json",
       "**/*.jsonc",
       "**/*.jsx",
       "**/*.tsx",
+      "**/*.css",
       "!dist",
       "!node_modules"
     ]
