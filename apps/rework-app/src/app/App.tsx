@@ -1,8 +1,9 @@
 import { Link } from "@swan-io/chicane";
-import { Router } from "../routes";
-import "./App.css";
+// import "./App.css";
 import { match } from "ts-pattern";
+import { Router } from "../routes";
 import HomePage from "./pages/HomePage";
+import "@workspace/shadcn-ui/globals.css";
 
 const App = () => {
   const route = Router.useRoute(["home"]);
