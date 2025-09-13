@@ -13,8 +13,10 @@ import {
   type RsbuildDevServer,
 } from "@rsbuild/core";
 import { type Context, Hono, type Next } from "hono";
+import { serverActions } from "./src/libs/server-actions";
 
 const app = new Hono();
+const cwd = process.cwd();
 
 function toRequest(req: IncomingMessage): Request {
   const url = `http://${req.headers.host}${req.url}`;
@@ -87,10 +89,9 @@ async function startDevServer() {
 
   const serverRenderMiddleware = serverRender(rsbuildDevServer);
 
-  app.get("/api", (c) => {
-    console.log("hello dev server api");
-    return c.text("");
-  });
+  for (const [_key, value] of Object.entries(serverActions)) {
+    app.get(value.path, (c) => value.action(c, cwd));
+  }
 
   app.get("/", async (c, next) => {
     try {
