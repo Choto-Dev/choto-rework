@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createHead, UnheadProvider } from "@unhead/react/server";
+import { ThemeProvider } from "@workspace/shadcn-ui/components/theme";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import App from "./App";
@@ -15,15 +16,15 @@ const head = createHead({
 const queryClient = new QueryClient();
 
 export function render() {
-  const html = ReactDOMServer.renderToString(
+  return ReactDOMServer.renderToString(
     <React.StrictMode>
       <UnheadProvider value={head}>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
         </QueryClientProvider>
       </UnheadProvider>
     </React.StrictMode>
   );
-
-  return { head, html };
 }

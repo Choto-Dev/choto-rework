@@ -1,5 +1,5 @@
 import { useHead } from "@unhead/react";
-import { Button } from "@workspace/shadcn-ui/ui/button";
+import { ToggleTheme } from "@workspace/shadcn-ui/components/toggle-theme";
 import { serverActions } from "../libs/server-actions";
 
 export default function HomePage() {
@@ -15,27 +15,18 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <main className="flex h-screen items-center justify-center bg-black text-white">
+      <main className="flex h-screen items-center justify-center">
         <h1 className="text-4xl text-muted-foreground">Loading</h1>
       </main>
     );
   }
 
   return (
-    <main className="flex h-screen flex-col items-center justify-center gap-4 bg-black text-white">
+    <main className="flex h-screen flex-col items-center justify-center gap-4">
       <h1 className="font-medium text-3xl">Hello, ReWork App</h1>
-      <p>{data?.ok}</p>
+      <p>CWR: {data.ok}</p>
 
-      <Button
-        className="hover:cursor-pointer"
-        onClick={() => {
-          fetch("http://localhost:3000/actions/is-valid-project");
-        }}
-        type="button"
-        variant={"secondary"}
-      >
-        Click To Check API
-      </Button>
+      <ToggleTheme />
     </main>
   );
 }
