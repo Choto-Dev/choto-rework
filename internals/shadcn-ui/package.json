@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
+    "./components/*": "./src/components/*.tsx",
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.ts",
+    "./providers": "./src/providers/*.tsx",
     "./ui/*": "./src/ui/*.tsx",
     "./utils": "./src/lib/utils.ts"
   },

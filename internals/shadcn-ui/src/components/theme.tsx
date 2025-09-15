@@ -10,8 +10,6 @@ type TTheme = "dark" | "light" | "system";
 
 type TThemeProviderProps = {
   children: React.ReactNode;
-  defaultTheme?: TTheme;
-  storageKey?: string;
 };
 
 type TThemeProviderState = {
@@ -25,13 +23,14 @@ const initialThemeState: TThemeProviderState = {
   systemTheme: "dark",
   setTheme: () => null,
 };
+const defaultTheme: TTheme = "dark";
 const localStorageKey = "rework-theme";
 const isServer = typeof window === "undefined";
 const MEDIA_STRING = "(prefers-color-scheme: dark)";
 const ThemeContext = createContext<TThemeProviderState>(initialThemeState);
 
 /**
- * Get theme from localStorage.
+ * Get theme from localStorage. Helper function.
  * @param key localStorage key
  * @returns theme
  */
@@ -40,13 +39,22 @@ const getTheme = (key: string): TTheme | undefined => {
     return;
   }
 
-  return (localStorage.getItem(key) as TTheme) || "dark";
+  return (localStorage.getItem(key) as TTheme) || defaultTheme;
 };
 
+/**
+ * Get system theme. Helper function.
+ * @param event Media query event
+ * @returns theme
+ */
 const getSystemTheme = (
   event?: MediaQueryList | MediaQueryListEvent
 ): TTheme => {
   let e = event;
+  if (isServer) {
+    return defaultTheme;
+  }
+
   if (!e) {
     e = window.matchMedia(MEDIA_STRING);
   }
@@ -56,11 +64,11 @@ const getSystemTheme = (
 /**
  * Theme component.
  * @param props theme props
- * @returns JSX element
+ * @returns Theme context provider
  */
 const Theme = (props: TThemeProviderProps) => {
   const [themeState, setThemeState] = useState<TTheme>(
-    () => getTheme(localStorageKey) || "dark"
+    () => getTheme(localStorageKey) || defaultTheme
   );
   const [systemThemeState, setSystemThemeState] = useState(() =>
     getSystemTheme()
@@ -68,6 +76,7 @@ const Theme = (props: TThemeProviderProps) => {
 
   /**
    * Apply theme in class list.
+   * @param theme Theme
    */
   const applyTheme = useCallback(
     (theme: TTheme) => {
@@ -89,26 +98,43 @@ const Theme = (props: TThemeProviderProps) => {
     [themeState]
   );
 
-  /**
-   * Handle deprecated listener to support iOS & old browsers.
-   */
-  const handleMediaQuery = useCallback(
-    (e: MediaQueryListEvent | MediaQueryList) => {
-      const resolved = getSystemTheme(e);
+  // Listen for deprecated listener to support iOS & old browsers.
+  useEffect(() => {
+    const handleMediaQuery = (event: MediaQueryListEvent | MediaQueryList) => {
+      const resolved = getSystemTheme(event);
       setSystemThemeState(resolved);
 
       if (themeState === "system") {
         applyTheme("system");
       }
-    },
-    [themeState, applyTheme]
-  );
+    };
 
-  useEffect(() => {
     const media = window.matchMedia(MEDIA_STRING);
     media.addListener(handleMediaQuery);
     return () => media.removeListener(handleMediaQuery);
-  }, [handleMediaQuery]);
+  }, [themeState, applyTheme]);
+
+  // localStorage event handling
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key !== localStorageKey) {
+        return;
+      }
+
+      // If default theme set, use it if localstorage === null (happens on local storage manual deletion)
+      if (e.newValue) {
+        setThemeState(e.newValue as TTheme); // Direct state update to avoid loops
+      } else {
+        if (!isServer) {
+          localStorage.setItem(localStorageKey, defaultTheme);
+        }
+        setThemeState(defaultTheme);
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   useEffect(() => {
     applyTheme(themeState);
@@ -132,13 +158,17 @@ const Theme = (props: TThemeProviderProps) => {
   );
 };
 
+/**
+ * Theme hook.
+ * @returns Theme state
+ */
 export const useTheme = () => useContext(ThemeContext) ?? initialThemeState;
 
+/**
+ * Theme provider
+ * @param props Theme provider props
+ * @returns Theme component
+ */
 export const ThemeProvider = (props: TThemeProviderProps) => {
-  const context = useContext(ThemeContext);
-
-  if (context) {
-    return <>{props.children}</>;
-  }
   return <Theme {...props} />;
 };
